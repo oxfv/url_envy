@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "URL Envy",
+  "description": "Allows editing the URL Params in the sidebar of the page.",
+  "version": "1.0",
+  "applications": {
+    "gecko": {
+      "strict_min_version": "54.0a1"
+    }
+  },
+
+  "sidebar_action": {
+    "default_icon": "icons/url_envy-48.png",
+    "default_title" : "URL Envy",
+    "default_panel": "sidebar/panel.html"
+  },
+
+  "permissions": ["storage", "tabs"],
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+U"
+      }
+    }
+  }
+}

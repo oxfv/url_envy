@@ -1,0 +1,74 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  font: caption;
+  background-color: #F4F7F8;
+}
+
+p {
+  margin: 1em 2em;
+}
+
+#url-div {
+  width: 100%;
+  height: 50px;
+}
+
+#url-label {
+  float: left;
+  margin: 11px 2px 4px 6px;
+}
+
+#path {
+  position: absolute;
+  margin-top: 2px;
+  margin-bottom: 40px;
+}
+
+.key {
+   margin: 2pt 0 0 2pt; 
+}
+
+.value {
+   margin: 2pt 0 0 0; 
+}
+
+.delete-span {
+  margin: 0 0 0 2pt;
+}
+
+#add_row {
+  margin: 2px 0 0 2px;
+}
+
+#sort {
+  float: left;
+  height: 25px;
+  margin: 20px 3px 20px 20px;
+}
+
+#submit {
+  float: right;
+  height: 25px;
+  margin: 20px 20px 20px 3px;
+}
+
+.buttom-text {
+  text-align: center;
+}
+
+#all {
+  width: 100%;
+  height: 100%;
+}
+
+#content {
+  transition: background-color .2s ease-out;
+}
+
