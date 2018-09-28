@@ -1,7 +1,9 @@
 {
   "manifest_version": 2,
   "name": "URL Envy",
+  "author": "Valera Fooksman",
   "description": "Allows editing the URL Params in the sidebar of the page.",
+  "homepage_url": "https://github.com/oxfv/url_envy",
   "version": "1.0",
   "applications": {
     "gecko": {
