@@ -8,7 +8,7 @@
   "applications": {
     "gecko": {
       "id": "url_envy@nikak.net",
-      "strict_min_version": "54.0a1",
+      "strict_min_version": "54.0a1"
     }
   },
 
