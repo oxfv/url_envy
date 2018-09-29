@@ -9,7 +9,6 @@
     "gecko": {
       "id": "url_envy@nikak.net",
       "strict_min_version": "54.0a1",
-      "update_url": "https://github.com/oxfv/url_envy/blob/master/updates.json"
     }
   },
 
