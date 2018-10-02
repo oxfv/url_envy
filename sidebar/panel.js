@@ -49,7 +49,7 @@ function addRow(key, value) {
 
   let v = document.createElement('INPUT');
   v.className = 'value';
-  v.style.width = (w - divider_x - 22) + 'px';
+  v.style.width = (w - divider_x - 35) + 'px';
   v.setAttribute('type', 'text');
   v.setAttribute('value', decodeURIComponent(value));
   v.onkeyup = function(event) { if(event.keyCode == 13) doSubmit(); }
@@ -140,7 +140,7 @@ function resize_controls() {
 
   var values = document.getElementsByClassName('value');
   for(let v=0; v<values.length; v++) {
-    values[v].style.width = (w - 22 - divider_x) + 'px';
+    values[v].style.width = (w - 35 - divider_x) + 'px';
   }
 
   document.getElementById('submit').style.width = (w - 100) + 'px';
