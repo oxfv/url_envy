@@ -4,7 +4,7 @@
   "author": "Valera Fooksman",
   "description": "Allows editing the URL Params in the sidebar of the page.",
   "homepage_url": "https://github.com/oxfv/url_envy",
-  "version": "1.0",
+  "version": "1.0.1",
   "applications": {
     "gecko": {
       "id": "url_envy@nikak.net",
