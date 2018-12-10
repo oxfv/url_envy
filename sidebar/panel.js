@@ -24,7 +24,30 @@ function parseURL() {
     });
 }
 
-function addRow(key, value) {
+function prepareEncodingMap() {
+  let charactersToEncode = '|:, ~/';
+  let customEncodingMap = {};
+  for(let i=0; i<charactersToEncode.length; i++) {
+    let c = charactersToEncode.charAt(i);
+    customEncodingMap[c] = encodeURIComponent(c);
+  }
+  return customEncodingMap;
+}
+var customEncodingMap = prepareEncodingMap();
+var encodingCharacters = '[' + Object.keys(customEncodingMap).join('') + ']';
+
+function customEncode(s) {
+  return s.replace(encodingCharacters, function(m) { return customEncodingMap[m]; });
+}
+
+function customDecode(s) {
+  for(let c in customEncodingMap) {
+    s = s.replace(new RegExp(customEncodingMap[c], 'g'), c );
+  }
+  return s;
+}
+
+function addRow(key, val) {
   let w = document.getElementById('all').clientWidth;
 
   let div = document.createElement('DIV');
@@ -35,7 +58,7 @@ function addRow(key, value) {
   k.style.width = divider_x + 'px';
   k.setAttribute('type', 'text');
   k.setAttribute('value', key);
-  k.onkeyup = function(event) { if(event.keyCode == 13) doSubmit(); }
+  k.onkeyup = function(event) { if(event.keyCode == 13) doSubmit(false); }
   div.appendChild(k);
 
   let r = document.createElement('span');
@@ -48,11 +71,15 @@ function addRow(key, value) {
   div.appendChild(r);
 
   let v = document.createElement('INPUT');
-  v.className = 'value';
+  v.className = 'val';
   v.style.width = (w - divider_x - 35) + 'px';
   v.setAttribute('type', 'text');
-  v.setAttribute('value', decodeURIComponent(value));
-  v.onkeyup = function(event) { if(event.keyCode == 13) doSubmit(); }
+  let s = val;
+  try {
+    s = customDecode(val);
+  } catch {}
+  v.setAttribute('value', s);
+  v.onkeyup = function(event) { if(event.keyCode == 13) doSubmit(false); }
   div.appendChild(v);
 
   let d = document.createElement('span');
@@ -78,12 +105,13 @@ function updateContent() {
   }
 
   document.getElementById('path').setAttribute('value', path);
+  document.getElementById('path').onkeyup = function(event) { if(event.keyCode == 13) doSubmit(false); }
 
   for(let i=0; i<param_list.length; i++) {
     let pair = param_list[i].split('=');
     let key = (pair.length >= 1) ? pair[0] : '';
-    let value = (pair.length >= 2) ? pair[1] : '';
-    addRow(key, value);
+    let val = (pair.length >= 2) ? pair[1] : '';
+    addRow(key, val);
   }
 
   resize_controls();
@@ -108,24 +136,45 @@ function collectContents() {
   let param_divs = collectParamDivs();
   for(let i=0; i<param_divs.length; i++) {
     div = param_divs[i];
-    let key, value;
+    let key, val;
     for (let i = 0; i < div.childNodes.length; i++) {
-      if (div.childNodes[i].className == "key")  key = encodeURIComponent(div.childNodes[i].value);
-      if (div.childNodes[i].className == "value")  value = encodeURIComponent(div.childNodes[i].value);
+      if (div.childNodes[i].className == "key")  key = customEncode(div.childNodes[i].value);
+      if (div.childNodes[i].className == "val")  val = customEncode(div.childNodes[i].value);
     }
-    if(key.length && value.length) {
-      contents.push(key + '=' + value);
+    if(key.length && val.length) {
+      contents.push(key + '=' + val);
     }
   }
 
   return contents;
 }
 
-function doSubmit() {
+function doSubmit(new_tab) {
   let url = document.getElementById('path').value + '?' + collectContents().join('&');
 
-  var updating = browser.tabs.update({url: url});
-  updating.then(function(){}, function(){});
+  let method = 'GET';
+  /*
+  let radios = document.getElementsByName('method');
+  for(let i=0; i<radios.length; i++) {
+    if(radios[i].checked) {
+      method = radios[i].value;
+      break;
+    }
+  }
+  */
+
+  browser.tabs.query({active: true, lastFocusedWindow: true}).then(
+    (tabInfo) => {
+      let curTabIndex = tabInfo[0].index;;
+      if(method == 'GET') {
+        var working = new_tab ? browser.tabs.create({url: url, index: curTabIndex + 1})
+                              : browser.tabs.update({url: url});
+        working.then(function(){}, function(){});
+      } else {
+        // todo
+      }
+    }
+  );
 }
 
 function resize_controls() {
@@ -138,7 +187,7 @@ function resize_controls() {
     keys[k].style.width = divider_x + 'px';
   }
 
-  var values = document.getElementsByClassName('value');
+  var values = document.getElementsByClassName('val');
   for(let v=0; v<values.length; v++) {
     values[v].style.width = (w - 35 - divider_x) + 'px';
   }
@@ -151,7 +200,9 @@ function resize_controls() {
   p.style.width = (w - 60) + 'px';
 }
 
-document.getElementById('submit').onclick = doSubmit;
+document.getElementById('submit').onmouseup = function(event) {
+  doSubmit(event.which == 2 ? true : event.shiftKey);
+}
 
 document.getElementById('sort').onclick = function() {
   param_list = collectContents();
